@@ -1,4 +1,4 @@
-🤖 DawnBot - Auto Farming Tool
+# 🤖 DawnBot - Auto Farming Tool
 
 DawnBot is an automated bot for farming on the Dawn platform.  
 
@@ -22,7 +22,14 @@ pip install -r requirements.txt
 ```bash
 nano emails.txt
 ```
-# 4. Add proxies (optional, one per line)
+# 4. Add proxies (one per line)
+
+<p align="center">
+  <a href="https://www.birdproxies.com/@busines1">
+    <img src="https://raw.githubusercontent.com/itsmesatyavir/DawnBot/8f207d60178f50b0ca15965450f5a595c46af8bf/IMG_20250926_154513.jpg" alt="My Image" />
+  </a>
+</p>
+
 ```bash
 nano proxy.txt
 ```
@@ -48,7 +55,7 @@ python main.py
 
 🌍 Proxy Source
 
-👉 BBirdProxies– Use code busines1 for 10% OFF.
+👉 BirdProxies– Use code busines1 for 10% OFF.
 (Any other paid SOCKS5/HTTP proxy provider will also work.)
 Link:- https://www.birdproxies.com/@busines1
 
