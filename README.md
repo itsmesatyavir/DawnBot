@@ -1,17 +1,59 @@
-# DawnBot
-3x Farming Trial Bot For DAWN 
-https://t.me/forestarmy 
+🤖 DawnBot - Auto Farming Tool
 
-🚀 BirdProxies Deal Alert! 🚀
+DawnBot is an automated bot for farming on the Dawn platform.  
 
-Use code busines1 and enjoy 10% OFF every purchase! 🎉
+---
 
-✨ Features:
-✅ Fast & Secure Proxies
-✅ Reliable Global Network
-✅ Always Online, Always Private
-✅ 100% Anonymous
-✅ Fit For All Airdrop Scripts 
+## ⚡ Commands
 
-🌍 Browse with freedom & confidence.
-👉 birdproxies.com/@busines1
+
+# 1. Clone repo
+```bash
+git clone https://github.com/itsmesatyavir/DawnBot
+cd DawnBot
+```
+
+# 2. Install dependicies
+```bash
+pip install -r requirements.txt
+```
+
+# 3. Add emails (one per line)
+```bash
+nano emails.txt
+```
+# 4. Add proxies (optional, one per line)
+```bash
+nano proxy.txt
+```
+# Supported formats:
+ >http://user:pass@host:port
+
+ >socks5://host:port
+
+ >host:port
+
+# 5. Save sessions (enter OTPs when asked)
+```bash
+python saver.py
+```
+
+# 6. Run the bot
+```bash
+python main.py
+```
+
+
+---
+
+🌍 Proxy Source
+
+👉 BBirdProxies– Use code busines1 for 10% OFF.
+(Any other paid SOCKS5/HTTP proxy provider will also work.)
+Link:- https://www.birdproxies.com/@busines1
+
+---
+
+⚠️ Disclaimer
+
+For educational purposes only. Use at your own risk.
